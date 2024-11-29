@@ -1,0 +1,7 @@
+C:\develop\MyFirstAzureWebApp\bin\Release\net8.0\publish\MyFirstAzureWebApp.exe
+C:\develop\MyFirstAzureWebApp\bin\Release\net8.0\publish\appsettings.Development.json
+C:\develop\MyFirstAzureWebApp\bin\Release\net8.0\publish\appsettings.json
+C:\develop\MyFirstAzureWebApp\bin\Release\net8.0\publish\MyFirstAzureWebApp.dll
+C:\develop\MyFirstAzureWebApp\bin\Release\net8.0\publish\MyFirstAzureWebApp.deps.json
+C:\develop\MyFirstAzureWebApp\bin\Release\net8.0\publish\MyFirstAzureWebApp.runtimeconfig.json
+C:\develop\MyFirstAzureWebApp\bin\Release\net8.0\publish\MyFirstAzureWebApp.pdb
