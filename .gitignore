@@ -1,0 +1,41 @@
+# Exclure les dossiers générés
+bin/
+obj/
+
+# Exclure les fichiers des dépendances globales
+*.log
+*.user
+*.suo
+*.pdb
+*.cache
+*.vs/
+
+# Exclure les fichiers spécifiques à Visual Studio Code
+.vscode/
+
+# Exclure les fichiers de configuration utilisateur locaux
+*.config
+*.json
+*.settings
+
+# Exclure les fichiers de publication et de build
+out/
+publish/
+dist/
+build/
+Debug/
+Release/
+
+# Exclure les fichiers des outils de conteneurisation
+*.Dockerfile
+docker-compose.override.yml
+
+# Exclure les fichiers secrets (comme les configurations locales)
+secrets.json
+*.key
+*.crt
+
+# Exclure les fichiers des tests
+TestResults/
+
+# Ex
