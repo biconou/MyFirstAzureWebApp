@@ -4,6 +4,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddControllers();
 
+// Ajouter HttpClient pour effectuer les appels HTTP
+builder.Services.AddHttpClient("ProxyApi", client =>
+{
+    client.BaseAddress = new Uri("https://api.exemple.com"); // Remplacez par l'URL de l'API cible
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
