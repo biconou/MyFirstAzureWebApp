@@ -12,6 +12,8 @@ builder.Services.AddHttpClient("ProxyApi", client =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+// Ajouter Application Insights
+builder.Services.AddApplicationInsightsTelemetry();
 
 var app = builder.Build();
 
@@ -37,5 +39,7 @@ app.MapControllers();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseMiddleware<RequestLoggerMiddleware>();
 
 app.Run();
