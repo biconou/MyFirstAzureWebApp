@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MyFirstAzureWebApp.Controllers;
@@ -13,65 +14,43 @@ public class TEACoreProxyController : ControllerBase
         _httpClient = httpClientFactory.CreateClient("ProxyApi");
     }
 
-    private void LogRequestDetails(string endpoint)
-    {
-        var request = HttpContext.Request;
-        var logger = HttpContext.RequestServices.GetRequiredService<ILogger<TEACoreProxyController>>();
 
-        // Log des informations de base
-        logger.LogInformation("Requête entrante pour le proxy :");
-        logger.LogInformation("URL : {Url}", request.Path);
-        logger.LogInformation("Méthode : {Method}", request.Method);
-        logger.LogInformation("Endpoint cible : {Endpoint}", endpoint);
-
-        // Log des paramètres de requête
-        if (request.Query.Any())
-        {
-            logger.LogInformation("Paramètres de requête :");
-            foreach (var queryParam in request.Query)
-            {
-                logger.LogInformation("{Key} = {Value}", queryParam.Key, queryParam.Value);
-            }
-        }
-
-        // Log des en-têtes
-        logger.LogInformation("En-têtes HTTP :");
-        foreach (var header in request.Headers)
-        {
-            logger.LogInformation("{Key}: {Value}", header.Key, header.Value);
-        }
-
-        // Log du payload si disponible
-        if (request.ContentLength > 0 && (request.Method == HttpMethods.Post || request.Method == HttpMethods.Put))
-        {
-            request.Body.Position = 0; // Réinitialiser le stream
-            using var reader = new StreamReader(request.Body);
-            var bodyContent = reader.ReadToEndAsync().Result;
-            logger.LogInformation("Corps de la requête : {Body}", bodyContent);
-        }
-    }
-
-
-    // Proxy d'un GET vers l'API externe
-    [HttpGet("{endpoint}")]
-    public async Task<IActionResult> GetProxy(string endpoint)
+    [HttpPost("{**endpoint}")]
+    public async Task<IActionResult> ProcessPost(String endpoint)
     {
         try
         {
-            // Log des informations de la requête entrante
-            LogRequestDetails(endpoint);
-            
-            // Appeler l'API distante
-            var response = await _httpClient.GetAsync(endpoint);
+            // Construire l'URL de l'API distante
+            var baseUrl = "http://localhost:5016/"; // Par exemple
+            var fullUrl = new Uri(new Uri(baseUrl), endpoint);
 
-            // Transférer la réponse telle quelle
-            var content = await response.Content.ReadAsStringAsync();
-            return StatusCode((int)response.StatusCode, content);
+            var body = await new StreamReader(Request.Body).ReadToEndAsync();
+            // Copier les headers de la requête entrante
+            var requestHeaders = Request.Headers;
+
+            // Construire le HttpContent pour la requête sortante
+            var content = new StringContent(body, Encoding.UTF8, Request.ContentType ?? "application/json");
+
+            // Ajouter les headers nécessaires à la requête sortante
+            foreach (var header in requestHeaders)
+            {
+                if (!content.Headers.TryAddWithoutValidation(header.Key, header.Value.ToArray()))
+                {
+                    _httpClient.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value.ToArray());
+                }
+            }
+
+            // Envoyer la requête POST
+            var response = await _httpClient.PostAsync(fullUrl, content);
+
+            var finalContent = await response.Content.ReadAsStringAsync();
+
+            // Retourner la réponse distante
+            return StatusCode((int)response.StatusCode, finalContent);
         }
         catch (HttpRequestException ex)
         {
-            // Gestion des erreurs de connexion
-            return StatusCode(500, new { Error = "Une erreur s'est produite lors de l'appel à l'API distante.", Details = ex.Message });
+            return StatusCode(500, new { Error = "Erreur lors de l'appel à l'API distante.", Details = ex.Message });
         }
     }
 }

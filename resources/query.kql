@@ -1,0 +1,3 @@
+requests
+| project timestamp, name, resultCode, client_CountryOrRegion, client_IP, duration, operation_Name, customDimensions.usage, customDimensions.Headers, customDimensions.Body, customDimensions.QueryParams
+| order by timestamp desc

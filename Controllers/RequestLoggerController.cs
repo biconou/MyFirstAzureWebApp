@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MyFirstAzureWebApp.Controllers
 {
-    [Route("api/[controller]/{*path}")]
+    [Route("[controller]/{*path}")]
     [ApiController]
     public class RequestLoggerController : ControllerBase
     {

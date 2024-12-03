@@ -2,7 +2,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.OutputFormatters.Add(new CustomTextFormatter()); // Ajouter le formatteur personnalisé
+});
 
 // Ajouter HttpClient pour effectuer les appels HTTP
 builder.Services.AddHttpClient("ProxyApi", client =>
@@ -14,6 +17,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // Ajouter Application Insights
 builder.Services.AddApplicationInsightsTelemetry();
+//builder.Services.AddControllers().AddXmlSerializerFormatters();
+// builder.Services.AddControllers(
+//     options => options.InputFormatters.Add(new PlainTextFormatter())
+//   );
 
 var app = builder.Build();
 

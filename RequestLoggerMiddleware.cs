@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.ApplicationInsights.DataContracts;
@@ -17,10 +18,20 @@ public class RequestLoggerMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
+
+        context.Request.EnableBuffering();
+
         // Capture des headers et autres informations
         var headers = context.Request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString());
-        var body = await new StreamReader(context.Request.Body).ReadToEndAsync();
         var queryParams = context.Request.QueryString.Value;
+        var body = "";
+        using (var reader = new StreamReader(context.Request.Body, Encoding.UTF8, leaveOpen: true))
+        {
+            body = await reader.ReadToEndAsync();
+            // Réinitialiser la position pour permettre une lecture ultérieure
+            context.Request.Body.Position = 0;
+        }
+
 
         // Créer un événement personnalisé dans Application Insights
         var requestTelemetry = new RequestTelemetry
@@ -39,6 +50,8 @@ public class RequestLoggerMiddleware
 
         // Envoyer l'événement personnalisé
         _telemetryClient.TrackRequest(requestTelemetry);
+
+        context.Request.Body.Position = 0;
 
         // Passer la requête au middleware suivant
         await _next(context);
