@@ -11,7 +11,7 @@ public class TEACoreProxyController : ControllerBase
 
     public TEACoreProxyController(IHttpClientFactory httpClientFactory)
     {
-        _httpClient = httpClientFactory.CreateClient("ProxyApi");
+        _httpClient = httpClientFactory.CreateClient("TEACoreProxy");
     }
 
 
@@ -20,10 +20,6 @@ public class TEACoreProxyController : ControllerBase
     {
         try
         {
-            // Construire l'URL de l'API distante
-            var baseUrl = "http://localhost:5016/"; // Par exemple
-            var fullUrl = new Uri(new Uri(baseUrl), endpoint);
-
             var body = await new StreamReader(Request.Body).ReadToEndAsync();
             // Copier les headers de la requête entrante
             var requestHeaders = Request.Headers;
@@ -41,7 +37,7 @@ public class TEACoreProxyController : ControllerBase
             }
 
             // Envoyer la requête POST
-            var response = await _httpClient.PostAsync(fullUrl, content);
+            var response = await _httpClient.PostAsync(endpoint, content);
 
             var finalContent = await response.Content.ReadAsStringAsync();
 

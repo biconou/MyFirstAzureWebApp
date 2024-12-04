@@ -2,15 +2,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddControllers(options =>
-{
-    options.OutputFormatters.Add(new CustomTextFormatter()); // Ajouter le formatteur personnalisé
-});
+builder.Services.AddControllers();
+// builder.Services.AddControllers(options =>
+// {
+//     options.OutputFormatters.Add(new CustomTextFormatter()); // Ajouter le formatteur personnalisé
+// });
 
-// Ajouter HttpClient pour effectuer les appels HTTP
-builder.Services.AddHttpClient("ProxyApi", client =>
+builder.Services.AddHttpClient("TEACoreProxy", client =>
 {
-    client.BaseAddress = new Uri("https://api.exemple.com"); // Remplacez par l'URL de l'API cible
+    client.BaseAddress = new Uri("https://glatech-myfirstazurewebapp.azurewebsites.net/"); // Remplacez par l'URL de l'API cible
 });
 
 builder.Services.AddEndpointsApiExplorer();
