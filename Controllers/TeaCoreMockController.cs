@@ -4,7 +4,7 @@ using System.Text;
 namespace MyFirstAzureWebApp.Controllers
 {
     [ApiController]
-    public class TeaCoreEncryptedPasswordMockController : ControllerBase
+    public class TeaCoreMockController : ControllerBase
     {
         [HttpPost("TeaCoreEncryptedPassword/api/password/getpassword")]
         public IActionResult GetPassword()

@@ -6,8 +6,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddHttpClient("TEACoreProxy", client =>
 {
-    client.BaseAddress = new Uri("https://glatech-myfirstazurewebapp.azurewebsites.net/");
-    //client.BaseAddress = new Uri("http://localhost:5016/");
+    //client.BaseAddress = new Uri("https://glatech-myfirstazurewebapp.azurewebsites.net/");
+    client.BaseAddress = new Uri("http://localhost:5016/");
 });
 
 builder.Services.AddEndpointsApiExplorer();
